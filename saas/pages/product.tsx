@@ -26,41 +26,96 @@ function ConsultationForm() {
         setOutput('');
         setLoading(true);
 
-        const jwt = await getToken();
-        if (!jwt) {
-            setOutput('Authentication required');
-            setLoading(false);
-            return;
-        }
-
         const controller = new AbortController();
         let buffer = '';
+        let isConnecting = false;
 
-        await fetchEventSource('/api/consultation', {
-            signal: controller.signal,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${jwt}`,
-            },
-            body: JSON.stringify({
-                patient_name: patientName,
-                date_of_visit: visitDate?.toISOString().slice(0, 10),
-                notes,
-            }),
-            onmessage(ev) {
-                buffer += ev.data;
-                setOutput(buffer);
-            },
-            onclose() { 
-                setLoading(false); 
-            },
-            onerror(err) {
-                console.error('SSE error:', err);
-                controller.abort();
-                setLoading(false);
-            },
-        });
+        const connectWithFreshToken = async () => {
+            if (isConnecting) return;
+            isConnecting = true;
+
+            try {
+                const jwt = await getToken();
+                if (!jwt) {
+                    setOutput('Authentication required. Please sign in.');
+                    setLoading(false);
+                    isConnecting = false;
+                    return;
+                }
+
+                await fetchEventSource('/api/consultation', {
+                    signal: controller.signal,
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${jwt}`,
+                    },
+                    body: JSON.stringify({
+                        patient_name: patientName,
+                        date_of_visit: visitDate?.toISOString().slice(0, 10),
+                        notes,
+                    }),
+                    onmessage(ev) {
+                        buffer += ev.data;
+                        setOutput(buffer);
+                    },
+                    onopen: async (response) => {
+                        if (response.ok) {
+                            isConnecting = false;
+                        } else if (response.status === 403) {
+                            console.log('403 detected in onopen, refreshing token...');
+                            isConnecting = false;
+                            buffer = '';
+                            setOutput('Refreshing authentication...');
+                            // Get fresh token and reconnect
+                            setTimeout(() => connectWithFreshToken(), 1000);
+                            throw new Error('Authentication failed - refreshing token');
+                        } else {
+                            isConnecting = false;
+                            setOutput(`Error: HTTP ${response.status}`);
+                            setLoading(false);
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+                    },
+                    onclose() { 
+                        setLoading(false);
+                        isConnecting = false;
+                    },
+                    onerror(err) {
+                        console.error('SSE error:', err);
+                        isConnecting = false;
+                        
+                        // Handle 403 errors by reconnecting with fresh token
+                        if (err instanceof Response && err.status === 403) {
+                            console.log('Token expired, reconnecting with fresh token...');
+                            buffer = '';
+                            setOutput('Refreshing authentication...');
+                            setTimeout(() => connectWithFreshToken(), 1000);
+                            return;
+                        }
+                        
+                        // For other errors, abort and show error
+                        controller.abort();
+                        setLoading(false);
+                        setOutput(`Connection error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+                    },
+                });
+            } catch (error) {
+                console.error('Connection failed:', error);
+                isConnecting = false;
+                
+                if (!controller?.signal.aborted) {
+                    if (error instanceof Error && error.message.includes('Authentication failed')) {
+                        // Already handled in onopen
+                        return;
+                    }
+                    setOutput(`Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                    setLoading(false);
+                }
+            }
+        };
+
+        connectWithFreshToken();
     }
 
     return (
