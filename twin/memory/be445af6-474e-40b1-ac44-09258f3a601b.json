@@ -1,0 +1,32 @@
+[
+  {
+    "role": "user",
+    "content": "Hi I'm Alex",
+    "timestamp": "2025-11-23T12:29:56.470285"
+  },
+  {
+    "role": "assistant",
+    "content": "Hi Alex, it\u2019s great to meet you! How can I assist you today? Are you interested in learning more about my work or experience?",
+    "timestamp": "2025-11-23T12:29:56.470295"
+  },
+  {
+    "role": "user",
+    "content": "Can you tell me my name ?",
+    "timestamp": "2025-11-23T12:30:12.271046"
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Alex. If there's anything specific you'd like to discuss or ask about, feel free to let me know!",
+    "timestamp": "2025-11-23T12:30:12.271057"
+  },
+  {
+    "role": "user",
+    "content": "What's your  qualification?",
+    "timestamp": "2025-11-23T12:30:39.595883"
+  },
+  {
+    "role": "assistant",
+    "content": "I hold a Bachelor's degree in Engineering with a specialization in Information Technology from Pune University, which I completed in 2012. If you're interested in my professional qualifications or skills, I have over 5.6 years of experience in software development, primarily in the MERN stack and AI engineering. Is there something specific in my qualifications that you would like to know more about?",
+    "timestamp": "2025-11-23T12:30:39.595888"
+  }
+]

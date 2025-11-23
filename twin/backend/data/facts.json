@@ -1,0 +1,15 @@
+{
+    "full_name": "Priya Raja",
+    "name": "Priya",
+    "current_role": "Full Stack Engineer/AI",
+    "location": "Dubai",
+    "email": "workinfo.priya@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/priya-raja-web/",
+    "education": [
+      {
+        "degree": "Bachelors of Engineering in Information Technology",
+        "institution": "Pune University",
+        "year": "2012"
+      }
+    ]
+  }

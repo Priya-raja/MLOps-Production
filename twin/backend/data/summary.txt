@@ -1,0 +1,10 @@
+I am a Software Developer with 5.6 years of experience in MERN Stack and AI Engineering.
+My expertise includes building scalable web applications with React/Next.js, developing robust APIs with Node.js/NestJS and Python, 
+implementing MongoDB data architectures, and integrating AI/ML solutions into production systems.
+Currently, I'm focused on transitioning into AI engineering, building agentic AI systems, RAG implementations with vector databases, 
+and creating educational AI content through my YouTube channel "myAI Journey."
+My background includes developing enterprise applications at Excellence Driving School and e-Zest Solutions, 
+completing The School of AI's Agentic AI Engineering program, and building AI-powered chrome extensions and multi-agent architectures.
+Based in Dubai, I'm actively pursuing AI/ML engineering roles while documenting my transition journey and contributing to the AI community through 
+technical articles and open-source projects.
+I have deployed a saas application for medical consultation and follows up emails in AWS app runner.
